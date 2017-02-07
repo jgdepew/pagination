@@ -1,0 +1,16 @@
+<table id="users">
+	<tr>
+		<th>Name</th>
+		<th>email</th>
+		<th>joined</th>
+	</tr>
+	<div>
+		{% for user in users %}
+		<tr class="user">
+			<td>{{user.name}}</td>
+			<td>{{user.email}}</td>
+			<td>{{user.created_at}}</td>
+		</tr>
+		{% endfor %}
+	</div>
+</table>

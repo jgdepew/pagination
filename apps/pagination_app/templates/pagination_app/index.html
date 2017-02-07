@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pagination</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+	<h2>Pagination</h2>
+
+	<h4>Create new user</h4>
+	<form action="{% url 'pagination:index' %}" method="post">
+		{% csrf_token %}
+		<p>Name: <input type="text" name="name">
+		Email<input type="text" name="email">
+		<input type="submit" name="Add"></p>
+	</form>
+
+	<h3>Users</h3>
+	<form id="search" action="/filter">
+		{% csrf_token %}
+		<p>Name: <input type="text" name="name"> 
+		Email: <input type="text" name="email">
+		Start Date Joined: <input type="date" name="start_date">
+		End Date Joined: <input type="date" name="end_date">
+		</p>
+	</form>
+	<div id="users">
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>email</th>
+				<th>joined</th>
+			</tr>
+			{% for user in users %}
+			<tr class="user">
+				<td>{{user.name}}</td>
+				<td>{{user.email}}</td>
+				<td>{{user.created_at}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+	
+	<div id="pages"> 
+	{{pages}}
+	</div>
+</body>
+
+<script type="text/javascript">
+	$('#search').keyup(function(e){
+      	$('#search').submit(function(a){
+    		a.preventDefault()
+      	})
+    	$.ajax({
+      		url: '/filter',
+      		method: 'post',
+      		data: $(this).serialize(),
+      		success: function(serverResponse) {
+      			console.log (serverResponse);
+      			// Coming from ajax request, so the only thing
+				$('#users').html($(serverResponse).find('table'));
+				// $('#pages').html($(serverResponse).find('div'));
+				
+      		}
+    	})
+    	
+  	})
+  	$('form').change(function(e){
+      	$('#search').submit(function(a){
+    		a.preventDefault()
+      	})
+    	$.ajax({
+      		url: '/filter',
+      		method: 'post',
+      		data: $(this).serialize(),
+      		success: function(serverResponse) {
+				$('#users').html($(serverResponse).find('table'));
+      		}
+    	})
+  	})
+
+  	// function getData() {
+  	// 	$.ajax({
+   //    		url: '/filter',
+   //    		method: 'post',
+   //    		data: $(this).serialize(),
+   //    		success: function(serverResponse) {
+			// 	$('#users').html($(serverResponse).find('table'));
+   //    		}
+   //  	})
+  	// }
+</script>
+</html>
